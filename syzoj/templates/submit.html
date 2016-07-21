@@ -6,8 +6,10 @@
 	    <form class="am-form" action="{{url_for('submit_code',problem_id=problem.id)}}" method="post">
 		    <div class="am-form-group">
 		      <label for="doc-select-1">选择语言</label>
-		      <select id="doc-select-1">
-		      		<option value="option1">C++</option>
+		      <select id="doc-select-1" name="language">
+		      		<option value="C++">C++</option>
+		      		<option value="C">C</option>
+		      		<option value="Pascal">Pascal</option>
 		      </select>
 		      <span class="am-form-caret"></span>
 		    </div>

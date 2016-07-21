@@ -22,7 +22,7 @@ def submit_code(problem_id):
 
     if request.method == "POST":
         code = request.form.get("code")
-        language = "C++"
+        language = request.form.get("language")
         if not code or len(code) <= 0 or len(code) >= 1024 * 100:
             return show_error("Please check out your code length.The code should less than 100kb.",
                               url_for("submit_code", problem_id=problem.id))
