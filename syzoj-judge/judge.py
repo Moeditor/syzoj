@@ -22,8 +22,14 @@ if not os.path.isdir(_TESTDATA_DIR):
     os.mkdir(_TESTDATA_DIR)
 
 
-def compile_src(source, des):
-    source_file = des + "_tmp.cpp"
+def compile_src(source, language, des):
+    if language == "C++":
+        source_file = des + "_tmp.cpp"
+    elif language == "C":
+        source_file = des + "_tmp.c"
+    elif language == "Pascal":
+        source_file = des + "_tmp.pas"
+
     exe_file = des
 
     with codecs.open(source_file, "w", "utf-8") as f:
@@ -31,7 +37,15 @@ def compile_src(source, des):
 
     if os.path.isfile(des):
         os.remove(des)
-    os.system("g++ " + source_file + " -o " + exe_file + " -lm -DONLINE_JUDGE")
+    
+    if language == "C++":
+        os.system("g++ " + source_file + " -o " + exe_file + " -O2 -lm -DONLINE_JUDGE")
+    elif language == "C":
+        os.system("gcc " + source_file + " -o " + exe_file + " -O2 -lm -DONLINE_JUDGE")
+    elif language == "Pascal":
+        os.system("fpc " + source_file + " -O2")
+        os.system("mv " + des + "_tmp " + des)
+
     os.remove(source_file)
 
     if os.path.isfile(des):
@@ -181,13 +195,13 @@ def run(exe_file, std_in, std_out, time_limit, memory_limit):
     return result
 
 
-def judge(source, time_limit, memory_limit, testdata):
+def judge(source, language, time_limit, memory_limit, testdata):
     result = {"status": "Judging", "score": 0, "total_time": 0, "max_memory": 0, "case_num": 0}
 
     testdata_dir = get_testdata_dir(testdata)
     exe_file = "tmp_exe"
 
-    if not compile_src(source, exe_file):
+    if not compile_src(source, language, exe_file):
         result["status"] = "Compile Error"
         return result
 
@@ -230,11 +244,10 @@ def main():
             continue
 
         try:
-            result = judge(task["code"], task["time_limit"], task["memory_limit"], task["testdata"])
+            result = judge(task["code"], task["language"], task["time_limit"], task["memory_limit"], task["testdata"])
         except:
             result = {"status": "System Error", "score": 0, "total_time": 0, "max_memory": 0, "case_num": 0}
 
-        print result
         upload_judge_result(result, task["judge_id"])
 
 
