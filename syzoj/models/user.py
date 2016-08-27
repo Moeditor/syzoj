@@ -63,7 +63,7 @@ class User(db.Model):
     is_show = db.Column(db.Boolean)
 
     def get_gravatar_url(self, size=40):
-        url = "http://cn.gravatar.com/avatar/" + hashlib.md5(self.email.lower()).hexdigest() + "?"
+        url = "https://cn.gravatar.com/avatar/" + hashlib.md5(self.email.lower()).hexdigest() + "?"
         url += urllib.urlencode({'d': 'mm', 's': str(size)})
         return url
 
