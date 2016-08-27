@@ -22,12 +22,14 @@
 	        {% set rank = sorter.per_page*(sorter.cur_page-1)+1%}
             {% set users = sorter.get() %}
 	        {% for user in users%}
+	        {% if user.is_show %}
 		        <tr>
 		        	<td>{{rank}}</td> {%set rank=rank+1%}
 		        	<td><a href="{{url_for('user',user_id=user.id)}}">{{user.nickname}}</a>{% if user.nameplate %}{{user.nameplate|safe}}{% endif %}</td>
 		        	<td>{% if user.information%}{{user.information}}{%endif%}</td>
 		        	<td>{{user.ac_num}}</td>
 		        </tr>
+		     {% endif %}
 		     {% endfor %}
 	        </tbody>
 	    </table>

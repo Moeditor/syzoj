@@ -59,6 +59,8 @@ class User(db.Model):
     submit_num = db.Column(db.Integer)
 
     is_admin = db.Column(db.Boolean)
+    
+    is_show = db.Column(db.Boolean)
 
     def get_gravatar_url(self, size=40):
         url = "http://cn.gravatar.com/avatar/" + hashlib.md5(self.email.lower()).hexdigest() + "?"
@@ -74,6 +76,7 @@ class User(db.Model):
         self.is_admin = False
         self.ac_num = 0
         self.submit_num = 0
+        self.is_show = True
 
     def __repr__(self):
         return "<User:%r password:%r email:%r>" % (self.username, self.password, self.email)
