@@ -7,6 +7,14 @@ from syzoj.models import User, Problem, File, FileParser
 from syzoj.controller import Paginate, Tools
 from .common import need_login, not_have_permission, show_error
 
+def renderMarkdown(s):
+    import subprocess
+    process = subprocess.Popen('moemark-renderer',
+                               stdin = subprocess.PIPE,
+                               stdout = subprocess.PIPE,
+                               stderr = subprocess.PIPE)
+    stdoutdata, stderrdata = process.communicate(input = s)
+    return stdoutdata
 
 @oj.route("/problem")
 def problem_set():
@@ -29,7 +37,13 @@ def problem(problem_id):
 
     if problem.is_allowed_use(user) == False:
         return not_have_permission()
-
+    
+    problem.description = renderMarkdown(problem.description);
+    problem.input_format = renderMarkdown(problem.input_format);
+    problem.output_format = renderMarkdown(problem.output_format);
+    problem.example = renderMarkdown(problem.example);
+    problem.limit_and_hint = renderMarkdown(problem.limit_and_hint);
+    
     return render_template("problem.html", tool=Tools, tab="problem_set", problem=problem)
 
 
