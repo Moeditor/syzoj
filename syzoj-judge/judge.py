@@ -245,8 +245,9 @@ def main():
 
         try:
             result = judge(task["code"], task["language"], task["time_limit"], task["memory_limit"], task["testdata"])
-        except:
+        except Exception as e:
             result = {"status": "System Error", "score": 0, "total_time": 0, "max_memory": 0, "case_num": 0}
+            print e
 
         upload_judge_result(result, task["judge_id"])
 
