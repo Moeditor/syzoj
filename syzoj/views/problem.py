@@ -54,10 +54,11 @@ def edit_problem(problem_id):
         return need_login()
 
     problem = Problem.query.filter_by(id=problem_id).first()
-    if problem and problem.is_allowed_edit(user) == False:
-        return not_have_permission()
 
     if request.method == "POST":
+        if problem and problem.is_allowed_edit(user) == False:
+            return not_have_permission()
+
         if not problem:
             problem_id = controller.create_problem(user=user, title=request.form.get("title"))
             problem = Problem.query.filter_by(id=problem_id).first()
