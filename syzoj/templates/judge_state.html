@@ -1,4 +1,14 @@
 {% extends "layout.html" %}
+{% block style %}
+    <style>
+        .score_link {
+            color: black;
+        }
+        .score_link:hover, .ce_link:hover {
+            text-decoration: underline;
+        }
+    </style>
+{% endblock %}
 {% block body %}
 <div class="am-container am-g">
     <h1>评测记录</h1>
@@ -32,19 +42,39 @@
                 {% set see_result=judge.is_allowed_see_result(user) %}
                 {% set result=judge.get_result()%}
                 <tr>
-                    <td>{{judge.id}}</td>
+                    <td><a href="{{url_for('judge_detail',judge_id=judge.id)}}">#{{judge.id}}</a></td>
                     <td><a href="{{url_for('problem',problem_id=judge.problem.id)}}">{{judge.problem.title}}</a></td>
                     {% if see_result %}
                     
-                    <td>{{judge.status}}</td>
+                    <td>
+                        {% if judge.status == "Accepted" %}
+                            <span style="color: green">
+                                {{judge.status}}
+                        {% elif judge.status == "Wrong Answer" %}
+                            <span style="color: red">
+                                {{judge.status}}
+                        {% elif judge.status == "Compile Error" %}
+                            <span> 
+                               <a class="ce_link" style="color: rgb(0, 68, 136)" href="{{url_for('judge_detail',judge_id=judge.id)}}">
+                                    {{judge.status}}
+                               </a>
+                        {% elif judge.status == "System Error" %}
+                            <span style="color: grey">
+                                {{judge.status}}
+                        {% else %}
+                            <span style="color: red">
+                                {{judge.status}}
+                        {% endif %}
+                            </span>
+                    </td>
 
                     {% if judge.is_allowed_see_code(user) %}
-                    <td><a href="{{url_for('judge_detail',judge_id=judge.id)}}">{{result["score"]}}</a></td>
+                    <td><a class="score_link" href="{{url_for('judge_detail',judge_id=judge.id)}}">{{result["score"]}}</a></td>
                     {% else %}
                     <td>{{result["score"]}}</td>
                     {% endif %}
 
-                    <td>{{result["total_time"]}}</td>
+                    <td>{{result["total_time"]}} ms</td>
                     {% else %}
                     <td>隐藏</td>
                     <td>隐藏</td>

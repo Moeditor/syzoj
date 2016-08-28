@@ -1,4 +1,16 @@
 {% extends "layout.html" %}
+{% block js %}
+<script>
+    function go_enable() {
+        document.getElementById('file-io-input-name').disabled = false;
+        document.getElementById('file-io-output-name').disabled = false;
+    }
+    function go_disable() {
+        document.getElementById('file-io-input-name').disabled = true;
+        document.getElementById('file-io-output-name').disabled = true;
+    }
+</script>
+{% endblock %}
 {% block body %}
 <div class="am-container am-g">
 	<div class="am-u-sm-6">
@@ -40,6 +52,28 @@
 		      <label for="doc-ds-ipt-1">内存限制(单位:MB)</label>
 		      <input type="number" name="memory_limit" value="{{problem.memory_limit}}">
 		    </div>
+            <div class="am-form-group">
+                <label>IO方式</label><br>
+                {% if not problem.file_io %}
+                <label for="std-io">标准IO：</label>
+                <input onclick="go_disable();" type="radio" id="std-io" name="io-method" value="std-io" checked>
+                <label style="padding-left: 20px;" for="file-io">文件IO：</label>
+                <input onclick="go_enable();" type="radio" value="file-io" id="file-io" name="io-method"><br>
+                <label for="file-io-input-name">输入文件名：</label>
+                <input type="text" id="file-io-input-name" name="file-io-input-name" value="{{problem.file_io_input_name}}" disabled>
+                <label for="file-io-ouput-name">输出文件名：</label>
+                <input type="text" id="file-io-output-name" name="file-io-output-name" value="{{problem.file_io_output_name}}" disabled>
+                {% else %}
+                <label for="std-io">标准IO：</label>
+                <input onclick="go_disable();" type="radio" id="std-io" name="io-method" value="std-io">
+                <label style="padding-left: 20px;" for="file-io">文件IO：</label>
+                <input onclick="go_enable();"type="radio" value="file-io" id="file-io" name="io-method" checked><br>
+                <label for="file-io-input-name">输入文件名：</label>
+                <input type="text" id="file-io-input-name" name="file-io-input-name" value="{{problem.file_io_input_name}}">
+                <label for="file-io-ouput-name">输出文件名：</label>
+                <input type="text" id="file-io-output-name" name="file-io-output-name" value="{{problem.file_io_output_name}}">
+                {% endif %}
+            </div>
 		    <div class="am-form-group">
 			      <label for="doc-ipt-file-1">测试数据</label>
 			      <input type="file" name="testdata">
