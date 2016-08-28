@@ -7,3 +7,6 @@ test.db
 *.zip
 .settings
 virenv
+syzoj-judge/testdata/
+syzoj/static/uploads/
+nohup.out

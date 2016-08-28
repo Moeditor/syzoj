@@ -32,6 +32,10 @@ class Problem(db.Model):
     ac_num = db.Column(db.Integer)
     submit_num = db.Column(db.Integer)
     is_public = db.Column(db.Boolean)
+	
+    file_io = db.Column(db.Boolean)
+    file_io_input_name = db.Column(db.Text)	
+    file_io_output_name = db.Column(db.Text)	
 
     def __init__(self, title, user,
                  description="", input_format="", output_format="", example="", limit_and_hint="",
@@ -52,6 +56,10 @@ class Problem(db.Model):
         self.ac_num = 0
         self.submit_num = 0
         self.is_public = False
+
+        self.file_io = False
+        self.file_io_input_name = "test.in"
+        self.file_io_output_name = "test.out"
 
     def __repr__(self):
         return "<Problem %r>" % self.title

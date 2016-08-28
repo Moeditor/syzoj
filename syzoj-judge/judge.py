@@ -10,7 +10,7 @@ import lorun
 import codecs
 from random import randint
 
-_SYZOJ_URL = "http://localhost"
+_SYZOJ_URL = "http://localhost:8811"
 _DOWNLOAD_TESTDATA_URL = _SYZOJ_URL + "/static/uploads"
 _GET_TASK_URL = _SYZOJ_URL + "/api/waiting_judge"
 _UPLOAD_TASK_URL = _SYZOJ_URL + "/api/update_judge"
@@ -29,7 +29,6 @@ def compile_src(source, language, des):
         source_file = des + "_tmp.c"
     elif language == "Pascal":
         source_file = des + "_tmp.pas"
-
     exe_file = des
 
     with codecs.open(source_file, "w", "utf-8") as f:
@@ -45,7 +44,6 @@ def compile_src(source, language, des):
     elif language == "Pascal":
         os.system("fpc " + source_file + " -O2")
         os.system("mv " + des + "_tmp " + des)
-
     os.remove(source_file)
 
     if os.path.isfile(des):
@@ -144,7 +142,7 @@ def shorter_read(file_name, max_len):
     return s
 
 
-def run(exe_file, std_in, std_out, time_limit, memory_limit):
+def run(exe_file, std_in, std_out, time_limit, memory_limit, file_io, file_io_input_name, file_io_output_name):
     result_str = (
         'Accepted',
         'Presentation Error',
@@ -156,11 +154,14 @@ def run(exe_file, std_in, std_out, time_limit, memory_limit):
         'Compile Error',
         'System Error'
     )
+    
     user_out = "user_tmp.out"
-
     std_in_f = open(std_in)
     user_out_f = open(user_out, 'w')
 
+    if file_io:
+        os.system("cp " + std_in + " " + file_io_input_name);
+        std_in_f = open("/dev/null")
     run_cfg = {
         'args': ['./' + exe_file],
         'fd_in': std_in_f.fileno(),
@@ -173,10 +174,16 @@ def run(exe_file, std_in, std_out, time_limit, memory_limit):
     std_in_f.close()
     user_out_f.close()
 
+    if file_io:
+        os.remove(user_out)
+        user_out = file_io_output_name
     result = {}
     result['status'] = result_str[res['result']]
     if res['result'] == 0:
-        if not check_ans(std_out, user_out):
+        if not os.path.isfile(user_out):
+            result['status'] = 'Wrong Answer' 
+        elif not check_ans(std_out, user_out):
+            print "zz"
             result['status'] = 'Wrong Answer'
     if not 'timeused' in res:
         result['time_used'] = 0
@@ -189,13 +196,19 @@ def run(exe_file, std_in, std_out, time_limit, memory_limit):
 
     result["input"] = shorter_read(std_in, 120)
     result["answer"] = shorter_read(std_out, 120)
-    result["user_out"] = shorter_read(user_out, 120)
-
-    os.remove(user_out)
+    
+    if os.path.isfile(user_out):
+        result["user_out"] = shorter_read(user_out, 120)
+        os.remove(user_out)
+    else:
+        result["user_out"] = ""
+    
+    if file_io:
+        os.system("rm -r " + file_io_input_name) 
     return result
 
 
-def judge(source, language, time_limit, memory_limit, testdata):
+def judge(source, language, time_limit, memory_limit, testdata, file_io, file_io_input_name, file_io_output_name):
     result = {"status": "Judging", "score": 0, "total_time": 0, "max_memory": 0, "case_num": 0}
 
     testdata_dir = get_testdata_dir(testdata)
@@ -218,7 +231,7 @@ def judge(source, language, time_limit, memory_limit, testdata):
         std_in_file = os.path.join(testdata_dir, std_in.replace("#", str(no)))
         std_out_file = os.path.join(testdata_dir, std_out.replace("#", str(no)))
 
-        res = run(exe_file, std_in_file, std_out_file, time_limit, memory_limit)
+        res = run(exe_file, std_in_file, std_out_file, time_limit, memory_limit, file_io, file_io_input_name, file_io_output_name)
 
         result[i] = res
         result["case_num"] += 1
@@ -233,6 +246,7 @@ def judge(source, language, time_limit, memory_limit, testdata):
     result["score"] = int(result["score"] + 0.1)
     if result["status"] == "Judging":
         result["status"] = "Accepted"
+    os.remove(exe_file)
     return result
 
 
@@ -244,7 +258,7 @@ def main():
             continue
 
         try:
-            result = judge(task["code"], task["language"], task["time_limit"], task["memory_limit"], task["testdata"])
+            result = judge(task["code"], task["language"], task["time_limit"], task["memory_limit"], task["testdata"], task["file_io"], task["file_io_input_name"], task["file_io_output_name"])
         except Exception as e:
             result = {"status": "System Error", "score": 0, "total_time": 0, "max_memory": 0, "case_num": 0}
             print e

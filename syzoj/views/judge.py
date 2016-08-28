@@ -99,7 +99,10 @@ def get_judge_info():
                     "language": judge.language,
                     "testdata": judge.problem.testdata.md5,
                     "time_limit": judge.problem.time_limit,
-                    "memory_limit": judge.problem.memory_limit})
+                    "memory_limit": judge.problem.memory_limit,
+                    "file_io": judge.problem.file_io,
+                    "file_io_input_name": judge.problem.file_io_input_name,
+                    "file_io_output_name": judge.problem.file_io_output_name})
 
 
 @oj.route("/api/update_judge/<int:judge_id>", methods=["POST"])

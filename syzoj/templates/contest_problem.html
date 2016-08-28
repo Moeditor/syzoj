@@ -16,6 +16,13 @@
         <p>
             <span class="am-badge am-badge-success am-text-sm">内存限制: {{problem.memory_limit}} MB</span>
             <span class="am-badge am-badge-warning am-text-sm">时间限制: {{problem.time_limit}} ms</span>
+            <br>
+            {% if problem.file_io %}
+            <span class="am-badge am-badge am-text-sm">文件输入: {{problem.file_io_input_name}}</span>
+            <span class="am-badge am-badge am-text-sm">文件输出: {{problem.file_io_output_name}}</span>
+            {%else%}
+            <span class="am-badge am-badge am-text-sm">标准输入输出</span>
+            {%endif %}
         </p>
     </div>
     <div class="am-u-sm-12">
@@ -43,9 +50,9 @@
         <form class="am-form" action="{{ url_for('submit_code', problem_id=problem.id, contest_id=contest.id) }}"
               method="post">
             <div class="am-form-group">
-                <label>选择语言</label>
-                <select>
-                    <option value="option1">C++</option>
+                <label for="doc-select-1">选择语言</label>
+                <select name="language" id="doc-select-1">
+                    <option value="C++">C++</option>
                 </select>
                 <span class="am-form-caret"></span>
             </div>
