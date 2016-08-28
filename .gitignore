@@ -9,4 +9,5 @@ test.db
 virenv
 syzoj-judge/testdata/
 syzoj/static/uploads/
+syzoj/templates/layout.html
 nohup.out
