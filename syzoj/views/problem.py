@@ -95,11 +95,11 @@ def upload_testdata(problem_id):
             problem.time_limit = int(request.form.get("time_limit"))
         if request.form.get("memory_limit"):
             problem.memory_limit = int(request.form.get("memory_limit"))
+       
         io_method = request.form['io-method']
-            
         if io_method == "std-io":
             problem.file_io = False
-        elif request.form.get("time_limit") and request.form.get("time_limit"):
+        elif request.form.get("file-io-input-name") and request.form.get("file-io-output-name"):
             problem.file_io = True
             problem.file_io_input_name = request.form.get("file-io-input-name")
             problem.file_io_output_name = request.form.get("file-io-output-name")
