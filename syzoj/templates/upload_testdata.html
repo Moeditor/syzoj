@@ -1,4 +1,16 @@
 {% extends "layout.html" %}
+{% block js %}
+<script>
+    function go_enable() {
+        document.getElementById('file-io-input-name').disabled = false;
+        document.getElementById('file-io-output-name').disabled = false;
+    }
+    function go_disable() {
+        document.getElementById('file-io-input-name').disabled = true;
+        document.getElementById('file-io-output-name').disabled = true;
+    }
+</script>
+{% endblock %}
 {% block body %}
 <div class="am-container am-g">
 	<div class="am-u-sm-6">
@@ -40,6 +52,30 @@
 		      <label for="doc-ds-ipt-1">内存限制(单位:MB)</label>
 		      <input type="number" name="memory_limit" value="{{problem.memory_limit}}">
 		    </div>
+            <div class="am-form-group">
+                <label>IO 方式</label><br>
+                {% if not problem.file_io %}
+                <div style="position: relative; height: 20px; margin-top: 10px; font-weight: 100;">
+                <input style="position: absolute; top: 0px; font-size: 16px; line-height: 16px; margin: 0px; font-weight: initial; left: 0px;" onclick="go_disable();" id="std-io" name="io-method" value="std-io" type="radio" checked>
+                <label style="left: 22px; position: absolute; top: 0px; font-size: 16px; line-height: 16px; margin: 0px; font-weight: initial;" for="std-io">标准 IO</label>
+                <input style="left: 120px; position: absolute; top: 0px; font-size: 16px; line-height: 16px; margin: 0px; font-weight: initial;" onclick="go_enable();" value="file-io" id="file-io" name="io-method" type="radio">
+                <label style="left: 144px; position: absolute; top: 0px; font-size: 16px; line-height: 16px; margin: 0px; font-weight: initial;" for="file-io">文件 IO</label></div><br>
+                <label for="file-io-input-name">输入文件名：</label>
+                <input type="text" id="file-io-input-name" name="file-io-input-name" value="{{problem.file_io_input_name}}" disabled>
+                <label for="file-io-output-name">输出文件名：</label>
+                <input type="text" id="file-io-output-name" name="file-io-output-name" value="{{problem.file_io_output_name}}" disabled>
+                {% else %}
+                <div style="position: relative; height: 20px; margin-top: 10px; font-weight: 100;">
+                <input style="position: absolute; top: 0px; font-size: 16px; line-height: 16px; margin: 0px; font-weight: initial; left: 0px;" onclick="go_disable();" id="std-io" name="io-method" value="std-io" type="radio">
+                <label style="left: 22px; position: absolute; top: 0px; font-size: 16px; line-height: 16px; margin: 0px; font-weight: initial;" for="std-io">标准 IO</label>
+                <input style="left: 120px; position: absolute; top: 0px; font-size: 16px; line-height: 16px; margin: 0px; font-weight: initial;" onclick="go_enable();" value="file-io" id="file-io" name="io-method" type="radio" checked>
+                <label style="left: 144px; position: absolute; top: 0px; font-size: 16px; line-height: 16px; margin: 0px; font-weight: initial;" for="file-io">文件 IO</label></div><br>
+                <label for="file-io-input-name">输入文件名：</label>
+                <input type="text" id="file-io-input-name" name="file-io-input-name" value="{{problem.file_io_input_name}}">
+                <label for="file-io-output-name">输出文件名：</label>
+                <input type="text" id="file-io-output-name" name="file-io-output-name" value="{{problem.file_io_output_name}}">
+                {% endif %}
+            </div>
 		    <div class="am-form-group">
 			      <label for="doc-ipt-file-1">测试数据</label>
 			      <input type="file" name="testdata">
